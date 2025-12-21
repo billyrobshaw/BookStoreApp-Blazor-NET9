@@ -2,7 +2,7 @@
 
 This is a new project that I'm starting and doing in my spare time. 
 I recently started a new role as a Junior Systems IT Developer and work on a Blazor application.
-This Blazor application was made before my arrival and I have taken over the code base as the original developer had left.
+This Blazor application was made before my arrival and I have taken over the code base as the original developer has left.
 Due to having little to no knowledge on Blazor I'm taking the time outside of my work hours to gain more understanding of the framework.
 
 This project is me following and completing the Complete Blazor (WASM & Server) and ASP.NET API Development by Treviour Williams and I do not take credit for any of the code written.
