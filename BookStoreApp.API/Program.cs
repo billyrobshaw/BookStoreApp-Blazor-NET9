@@ -1,3 +1,4 @@
+using BookStoreApp.API.Configurations;
 using BookStoreApp.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -6,10 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var connString = builder.Configuration.GetConnectionString("BooksStoreAppDbConnection");
-
 builder.Services.AddDbContext<BookStoreDbContext>(options => options.UseSqlServer(connString));
 
-
+builder.Services.AddAutoMapper(typeof(MapperConfig));
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
