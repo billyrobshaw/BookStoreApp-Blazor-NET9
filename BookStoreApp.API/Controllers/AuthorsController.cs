@@ -24,6 +24,7 @@ namespace BookStoreApp.API.Controllers
         {
             _context = context;
             this.mapper = mapper;
+            this.logger = logger;
         }
 
         // GET: api/Authors
@@ -64,7 +65,7 @@ namespace BookStoreApp.API.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"Error Performing Get Request in {nameof(GetAuthors)}");
+                logger.LogError(ex, $"Error Performing Get Request in {nameof(GetAuthor)}");
                 return StatusCode(500, Messages.Error500Message);
             }
             
