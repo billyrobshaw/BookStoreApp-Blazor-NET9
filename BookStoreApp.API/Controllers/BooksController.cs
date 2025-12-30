@@ -66,12 +66,15 @@ namespace BookStoreApp.API.Controllers
                     logger.LogWarning($"Record Not Found: {nameof(GetBook)} - ID: {id}");
                     return NotFound();
                 }
+                return Ok(book);
             }
+                
             catch(Exception ex)
             {
                 logger.LogError(ex, $"Error Performing Get Request in {nameof(GetBook)}");
                 return StatusCode(500, Messages.Error500Message);
             }
+            
         }
 
         // PUT: api/Books/5
