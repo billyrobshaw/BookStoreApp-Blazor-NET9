@@ -66,7 +66,6 @@ namespace BookStoreApp.API.Controllers
                     logger.LogWarning($"Record Not Found: {nameof(GetBook)} - ID: {id}");
                     return NotFound();
                 }
-                return Ok(book);
             }
             catch(Exception ex)
             {
