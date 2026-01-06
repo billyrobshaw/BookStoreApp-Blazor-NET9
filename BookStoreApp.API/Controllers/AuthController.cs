@@ -51,7 +51,8 @@ namespace BookStoreApp.API.Controllers
                 }
 
                 await userManager.AddToRoleAsync(user, "User");
-                return Accepted();
+                //Return Ok rather than accepted as Blazor expects 200 code not 201
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -84,7 +85,7 @@ namespace BookStoreApp.API.Controllers
                     Token = tokenString,
                     UserId = user.Id
                 };
-
+                //Return Ok rather than accepted as Blazor expects 200 code not 201
                 return Ok(response);
 
             }
