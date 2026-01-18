@@ -1,13 +1,14 @@
-﻿@page "/authors/create"
+﻿@page "/authors/update/{id:int}"
 @inject IAuthorService authorService
 @inject NavigationManager navManager
-<h3>Create New Author</h3>
-<EditForm Model="Author" OnValidSubmit="HandleCreateAuthor">
+<h3>Edit Author</h3>
+
+<EditForm Model="Author" OnValidSubmit="HandleUpdateAuthor">
     <DataAnnotationsValidator />
     <ValidationSummary />
     <div class="form-group">
         <label for="firstname">First Name</label>
-        <InputText @bind-Value="Author.FirstName" class="form-control" id="firstname"/>
+        <InputText @bind-Value="Author.FirstName" class="form-control" id="firstname" />
         <ValidationMessage For="@(() => Author.FirstName)" />
     </div>
     <br />
@@ -25,7 +26,7 @@
     <br />
     <button class="btn btn-primary" type="submit">
         <span class="oi oi-pencil"></span>
-        Create Author
+        Update Author
     </button>
     <br />
     <button @onclick="BackToList" class="btn btn-outline-secondary">
@@ -35,11 +36,24 @@
 </EditForm>
 
 @code {
-    private AuthorCreateDto Author = new AuthorCreateDto();
+    [Parameter]
+    public int id { get; set; }
 
-    private async Task HandleCreateAuthor()
+    private AuthorUpdateDto Author = new AuthorUpdateDto();
+
+    protected async override Task OnInitializedAsync()
     {
-        var response = await authorService.CreateAuthor(Author);
+        var response = await authorService.GetForUpdateAuthor(id);
+
+        if(response.Success)
+        {
+            Author = response.Data;
+        }
+    }
+
+    private async Task HandleUpdateAuthor()
+    {
+        var response = await authorService.EditAuthor(id,Author);
         if (response.Success)
         {
             BackToList();

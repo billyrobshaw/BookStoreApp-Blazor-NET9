@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+	<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
     <PackageReference Include="Blazored.LocalStorage" Version="4.2.0" />
     <PackageReference Include="BootstrapIcons.AspNetCore" Version="1.13.0" />
     <PackageReference Include="Iconify" Version="1.0.0" />
