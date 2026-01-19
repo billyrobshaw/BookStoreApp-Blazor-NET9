@@ -60,7 +60,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var response = await authorService.GetAuthors();
+        var response = await authorService.GetAuthor();
 
         if (response.Success)
         {

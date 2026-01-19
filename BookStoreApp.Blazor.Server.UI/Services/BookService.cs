@@ -30,7 +30,7 @@ namespace BookStoreApp.Blazor.Server.UI.Services
             return response;
         }
 
-        public async Task<Response<List<BookReadOnlyDto>>> GetBooks()
+        public async Task<Response<List<BookReadOnlyDto>>> GetBook()
         {
             Response<List<BookReadOnlyDto>> response;
             try
