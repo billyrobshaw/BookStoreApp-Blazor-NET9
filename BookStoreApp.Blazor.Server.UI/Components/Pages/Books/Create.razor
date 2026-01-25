@@ -24,12 +24,17 @@
     </div>
     <br />
     <div class="form-group">
+        <label for="year">Year</label>
+        <InputNumber @bind-Value="Book.Year" class="form-control" id="year" />
+    </div>
+    <br />
+    <div class="form-group">
         <label for="summary">Book Summary</label>
         <InputTextArea @bind-Value="Book.Summary" class="form-control" id="summary" />
     </div>
     <div class="form-group">
-        <label for="summary">Authors</label>
-        <InputSelect @bind-Value="Book.AuthorId" class="form-control" id="author">
+        <label for="author">Authors</label>
+        <InputSelect @bind-Value="Book.AuthorId" class="form-select" id="author">
             <option value="">-- Select Author --</option>
             @foreach(var author in Authors)
             {
@@ -46,6 +51,15 @@
             <p class="text-danager">@UploadFileWarning</p>
         </div>
     </div>
+    <br />
+    <button class="btn btn-primary" type="submit">
+        <span class="oi oi-pencil"></span>
+        Create Author
+    </button>
+    <button onclick="BackToList" class=" btn btn-outline-secondary">
+        <span class="oi oi-media-skip-backward"></span>
+        Back To List
+    </button>
 </EditForm>
 
 @code {
@@ -67,7 +81,11 @@
 
     private async Task HandleCreateBook()
     {
-
+        var response = await bookService.CreateBook(Book);
+        if (response.Success)
+        {
+            BackToList();
+        }
     }
 
     private async Task HandleFileSelection(InputFileChangeEventArgs e)
@@ -83,7 +101,8 @@
                 string imageType = file.ContentType;
                 string base64String = Convert.ToBase64String(byteArray);
 
-                Book.Image = base64String;
+                Book.ImageData = base64String;
+                Book.OriginalImageName = file.Name;
                 img = $"data:{imageType}; base64, {base64String}";
             }
             else
@@ -91,6 +110,11 @@
                 UploadFileWarning = "Please select a valid image file (*.jpg, *.png or *.jpeg)";
             }
         }
+    }
+
+    private void BackToList()
+    {
+        navManager.NavigateTo("/books/");
     }
 
 }

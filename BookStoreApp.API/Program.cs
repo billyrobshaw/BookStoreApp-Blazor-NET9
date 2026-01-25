@@ -72,6 +72,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 
 //Enabling Cors
 app.UseCors("AllowAll");
