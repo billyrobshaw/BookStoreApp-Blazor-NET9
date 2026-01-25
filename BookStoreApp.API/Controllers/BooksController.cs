@@ -98,8 +98,22 @@ namespace BookStoreApp.API.Controllers
                 logger.LogWarning($"Record Not Found: {nameof(PutBook)} - ID: {id}");
                 return NotFound();
             }
-            
+
+            if (string.IsNullOrEmpty(bookDto.ImageData) == false)
+            {
+                book.Image = CreateFile(bookDto.ImageData, bookDto.OriginalImageName);
+
+                var picName = Path.GetFileName(book.Image);
+                var path = $"{webHostEnvironment.WebRootPath}\\bookcoverimages\\{picName}";
+
+                if (System.IO.File.Exists(path))
+                {
+                    System.IO.File.Delete(path);
+                }
+            }
+
             mapper.Map(bookDto, book);
+
             _context.Entry(book).State = EntityState.Modified;
 
             try
