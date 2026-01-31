@@ -2,6 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using BookStoreApp.API.Data;
 using BookStoreApp.API.Models.Author;
+using BookStoreApp.API.Repositories;
 using BookStoreApp.API.Static;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -19,13 +20,13 @@ namespace BookStoreApp.API.Controllers
     [Authorize]
     public class AuthorsController : ControllerBase
     {
-        private readonly BookStoreDbContext _context;
+        private readonly IAuthorsRepository authorsRepository;
         private readonly IMapper mapper;
         private readonly ILogger<AuthorsController> logger;
 
-        public AuthorsController(BookStoreDbContext context, IMapper mapper, ILogger<AuthorsController> logger)
+        public AuthorsController(IAuthorsRepository authorsRepository, IMapper mapper, ILogger<AuthorsController> logger)
         {
-            _context = context;
+            this.authorsRepository = authorsRepository;
             this.mapper = mapper;
             this.logger = logger;
         }
@@ -38,7 +39,7 @@ namespace BookStoreApp.API.Controllers
             try
             {
                 //Uses only AuthorReadOnlyDto to limit data exposure
-                var authors = await _context.Authors.ToListAsync();
+                var authors = await authorsRepository.GetAllAsync();
                 var authorDtos = mapper.Map<IEnumerable<AuthorReadOnlyDto>>(authors);
                 return Ok(authorDtos);
             }
@@ -55,10 +56,7 @@ namespace BookStoreApp.API.Controllers
         {
             try
             {
-                var author = await _context.Authors
-                    .Include(q => q.Books)
-                    .ProjectTo<AuthorDetailsDto>(mapper.ConfigurationProvider)
-                    .FirstOrDefaultAsync(q => q.Id == id);
+                var author = authorsRepository.GetAuthorDetailsAysnc(id);
 
                 if (author == null)
                 {
@@ -89,7 +87,7 @@ namespace BookStoreApp.API.Controllers
                 return BadRequest();
             }
 
-            var author = await _context.Authors.FindAsync(id);
+            var author = await authorsRepository.GetAsync(id);
 
             if (author == null)
             {
@@ -99,12 +97,11 @@ namespace BookStoreApp.API.Controllers
 
             mapper.Map(authorDto, author);
 
-            _context.Entry(author).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                await authorsRepository.UpdateAsync(author);
             }
+
             catch (DbUpdateConcurrencyException ex)
             {
                 if (!await AuthorExists(id))
@@ -131,8 +128,7 @@ namespace BookStoreApp.API.Controllers
             {
                 //Maps the Author Base class to the AuthorCreateDto
                 var author = mapper.Map<Author>(authorDto);
-                await _context.Authors.AddAsync(author);
-                await _context.SaveChangesAsync();
+                await authorsRepository.AddAsync(author);
 
                 return CreatedAtAction(nameof(GetAuthor), new { id = author.Id }, author);
             }
@@ -151,15 +147,14 @@ namespace BookStoreApp.API.Controllers
         {
             try
             {
-                var author = await _context.Authors.FindAsync(id);
+                var author = await authorsRepository.GetAsync(id);
                 if (author == null)
                 {
                     logger.LogWarning($"{nameof(Author)} record not found in {nameof(DeleteAuthor)} - ID: {id}");
                     return NotFound();
                 }
 
-                _context.Authors.Remove(author);
-                await _context.SaveChangesAsync();
+                await authorsRepository.DeleteAsync(id);
 
                 return NoContent();
             }
@@ -174,7 +169,7 @@ namespace BookStoreApp.API.Controllers
 
         private async Task<bool> AuthorExists(int id)
         {
-            return await _context.Authors.AnyAsync(e => e.Id == id);
+            return await authorsRepository.Exists(id);
         }
     }
 }
