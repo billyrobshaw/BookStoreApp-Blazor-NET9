@@ -1,4 +1,6 @@
 ﻿using BookStoreApp.API.Data;
+using BookStoreApp.API.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace BookStoreApp.API.Repositories
 {
@@ -15,5 +17,7 @@ namespace BookStoreApp.API.Repositories
         Task DeleteAsync(int id);
 
         Task<bool> Exists(int id);
+
+        Task<VertualizeResponse<IResult>> GetAllAsync<TResult>(QueryParameters queryParam) where TResult : class;
     }
 }
